@@ -21,7 +21,7 @@ const SetupPage = async () => {
   });
 
   if (isCompanyMember) {
-    return redirect(`/${isCompanyMember.slug}`);
+    return redirect(`/${isCompanyMember.id}`);
   }
 
   return <CreateCompanyModal />;

@@ -1,26 +1,22 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { CreateProfileModal } from '../modals/CreateProfileModal'
-import { EditProfileModal } from '../modals/EditProfileModal'
-import { CreateChannelModal } from '../modals/CreateChannelModal'
+import { useEffect, useState } from "react";
+import { CreateUserModal } from "../modals/create-user-modal";
 
 export const ModalProvider = () => {
-  const [isMounted, setIsMounted] = useState(false)
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true)
-  }, [])
+    setIsMounted(true);
+  }, []);
 
   if (!isMounted) {
-    return null
+    return null;
   }
 
   return (
     <>
-      <CreateProfileModal />
-      <EditProfileModal />
-      <CreateChannelModal />
+      <CreateUserModal />
     </>
-  )
-}
+  );
+};

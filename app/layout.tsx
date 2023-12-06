@@ -1,4 +1,5 @@
 import AuthProvider from "@/components/providers/auth-provider";
+import { ModalProvider } from "@/components/providers/modal-provider";
 import ToasterProvider from "@/components/providers/toaster-provider";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -21,6 +22,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthProvider>
           <ToasterProvider />
+          <ModalProvider />
           {children}
         </AuthProvider>
       </body>
