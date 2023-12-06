@@ -2,7 +2,7 @@
 import { ChannelType, Company, Member, User } from "@prisma/client";
 import { create } from "zustand";
 
-export type ModalType = "members" | "profiles" | "editUser" | "createChannel";
+export type ModalType = "createUser" | "profiles" | "editUser" | "createChannel";
 
 interface ModalData {
   company?: Company;

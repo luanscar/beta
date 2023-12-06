@@ -2,15 +2,15 @@ import { db } from "./db";
 import { getCurrentSession } from "./session";
 
 export const currentUser = async () => {
-  const id = await getCurrentSession();
+  const session = await getCurrentSession();
 
-  if (!id) {
+  if (!session?.user.id) {
     return null;
   }
 
   const user = await db.user.findUnique({
     where: {
-      id,
+      id: session?.user.id
     },
   });
 
