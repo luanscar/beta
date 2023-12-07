@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Home, LayoutDashboard, Search, Users2 } from "lucide-react";
+import { LayoutDashboard, Users2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { buttonVariants } from "../ui/button";
@@ -71,7 +71,7 @@ function NavLinks({ companyId }: NavLinksProps) {
           >
             <LinkIcon className="w-6 h-6 shrink-0" />
             <p
-              className={`${cn("hidden 2xl:flex", {
+              className={`${cn("hidden md:flex", {
                 "font-extrabold": isActive,
               })}`}
             >
