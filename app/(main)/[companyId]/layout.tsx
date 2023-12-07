@@ -16,7 +16,7 @@ export default function CompanyIdLayout({
       {/* flex-grow md:mt-0 flex-1 w-full md:overflow-y-auto max-w-7xl mx-auto */}
       <div className="flex flex-col">
         Sidebar
-        {/* parei aqui! */}
+        {/* parei aqui */}
         {children}
       </div>
     </div>
