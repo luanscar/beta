@@ -7,7 +7,7 @@ export type ModalType = "createUser" | "profiles" | "editUser" | "createChannel"
 interface ModalData {
   company?: Company;
   members?: Member;
-  profile?: User
+  user?: User
   channelType?: ChannelType;
 }
 

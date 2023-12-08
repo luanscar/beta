@@ -43,8 +43,8 @@ export async function POST(
       data: {
         name,
         email,
+        image: "https://avatar.iran.liara.run/public",
         userToken: uuidv4(),
-        role,
         members: {
           create: {
             companyId: companyId,

@@ -6,11 +6,10 @@ interface UserListProps {
 }
 
 const UserList = ({ membersWithUsers }: UserListProps) => {
-  console.log(membersWithUsers);
   return (
     <div>
       {membersWithUsers?.map((member) => (
-        <UserBox key={member.id} user={member.user} />
+        <UserBox key={member.id} data={member} />
       ))}
     </div>
   );

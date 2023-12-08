@@ -42,17 +42,12 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-enum UserRole {
-  ADMIN
-  MODERATOR
-  GUEST
-}
 
 model User {
   id             String    @id @default(uuid())
   name           String?
   email          String?   @unique
-  role           UserRole  @default(ADMIN)
+
   hashedPassword String?
   emailVerified  DateTime?
   image          String?
