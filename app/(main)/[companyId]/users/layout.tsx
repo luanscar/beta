@@ -1,7 +1,8 @@
 import SidebarManager from "@/components/sidebar/sidebar-manager";
-import UserList from "@/components/user/user-list";
+import { UserList } from "@/components/user/user-list";
 import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
+import { redirect } from "next/navigation";
 
 export default async function UsersLayout({
   children,
@@ -11,39 +12,47 @@ export default async function UsersLayout({
   params: { companyId: string };
 }) {
   const user = await currentUser();
-  // const members = await db.company.findMany({
-  //   where: {
-  //     id: params.companyId,
-  //   },
-  //   include: {
-  //     members: {
-  //       where: {
-  //         NOT: {
-  //           userId: user?.id,
-  //         },
-  //       },
-  //     },
-  //   },
-  // });
 
-  const membersWithUsers = await db.member.findMany({
+  if (!user) {
+    return redirect("/");
+  }
+
+  const company = await db.company.findUnique({
     where: {
-      companyId: params.companyId,
-      NOT: {
-        userId: user?.id,
-      },
+      id: params.companyId,
     },
     include: {
-      user: true,
+      members: {
+        include: {
+          user: true,
+        },
+      },
     },
   });
 
+  const members = company?.members.filter(
+    (member) => member.userId !== user.id
+  );
+
+  if (!company) {
+    return redirect("/");
+  }
+
   return (
     <>
-      <SidebarManager companyId={params.companyId}>
-        <UserList membersWithUsers={membersWithUsers} />
-      </SidebarManager>
-      <div className="">{children}</div>
+      <div className="h-full">
+        <div className="hidden md:flex h-full w-96 z-20 flex-col fixed inset-y-0">
+          <SidebarManager companyId={params.companyId}>
+            <UserList
+              apiUrl="/api/company/user"
+              chatId={company.id}
+              paramKey="companyId"
+              paramValue={params.companyId}
+            />
+          </SidebarManager>
+        </div>
+        <main className="h-full md:pl-96">{children}</main>
+      </div>
     </>
   );
 }

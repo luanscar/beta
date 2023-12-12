@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -36,13 +35,7 @@ const formSchema = z.object({
 });
 
 export const CreateCompanyModal = () => {
-  const [isMounted, setIsMounted] = useState(false);
-
   const router = useRouter();
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -64,10 +57,6 @@ export const CreateCompanyModal = () => {
       console.log(error);
     }
   };
-
-  if (!isMounted) {
-    return null;
-  }
 
   return (
     <Dialog open>

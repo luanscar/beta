@@ -27,6 +27,7 @@ import { useModal } from "@/hooks/use-modal-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Member, MemberRole, User } from "@prisma/client";
 import axios from "axios";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
@@ -37,7 +38,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useEffect } from "react";
 
 const formSchema = z.object({
   name: z
@@ -90,9 +90,9 @@ export const EditUserModal = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const url = qs.stringifyUrl({
-        url: `/api/company/member/${member.id}`,
+        url: `/api/company/user/${member.userId}`,
         query: {
-          userId: member.userId,
+          memberId: member.id,
         },
       });
 

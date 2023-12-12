@@ -1,5 +1,6 @@
 import AuthProvider from "@/components/providers/auth-provider";
 import { ModalProvider } from "@/components/providers/modal-provider";
+import { QueryProvider } from "@/components/providers/query-provider";
 import ToasterProvider from "@/components/providers/toaster-provider";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -18,12 +19,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning suppressContentEditableWarning>
       <body className={inter.className}>
         <AuthProvider>
           <ToasterProvider />
           <ModalProvider />
-          {children}
+          <QueryProvider>{children}</QueryProvider>
         </AuthProvider>
       </body>
     </html>

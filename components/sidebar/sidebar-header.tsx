@@ -3,6 +3,7 @@
 import { MemberRole } from "@prisma/client";
 import {
   ChevronDown,
+  LogOut,
   PlusCircle,
   Settings,
   UserPlus,
@@ -17,6 +18,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useModal } from "@/hooks/use-modal-store";
 import { CompanyWithMembersWithUsers } from "@/types/db-types";
+import { signOut } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { SkeletonHeader } from "../skeleton/skeleton-header";
 
 interface SidebarHeaderProps {
   company: CompanyWithMembersWithUsers;
@@ -24,10 +28,19 @@ interface SidebarHeaderProps {
 }
 
 export const SidebarHeader = ({ company, role }: SidebarHeaderProps) => {
+  const [isMounted, setIsMounted] = useState(false);
   const { onOpen } = useModal();
 
   const isAdmin = role === MemberRole.ADMIN;
   const isModerator = isAdmin || role === MemberRole.MODERATOR;
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return <SkeletonHeader />;
+  }
 
   return (
     <DropdownMenu>
@@ -64,7 +77,7 @@ export const SidebarHeader = ({ company, role }: SidebarHeaderProps) => {
             onClick={() => onOpen("createUser", { company })}
             className="px-3 py-2 text-sm cursor-pointer"
           >
-            Criar usuários
+            Criar Usuários
             <Users className="h-4 w-4 ml-auto" />
           </DropdownMenuItem>
         )}
@@ -77,6 +90,14 @@ export const SidebarHeader = ({ company, role }: SidebarHeaderProps) => {
             <PlusCircle className="h-4 w-4 ml-auto" />
           </DropdownMenuItem>
         )}
+
+        <DropdownMenuItem
+          onClick={() => signOut()}
+          className="text-rose-500 px-3 py-2 text-sm cursor-pointer"
+        >
+          Sair
+          <LogOut className="h-4 w-4 ml-auto" />
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

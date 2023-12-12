@@ -1,7 +1,6 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import qs from "query-string";
 
 import {
   Dialog,
@@ -23,10 +22,14 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { useModal } from "@/hooks/use-modal-store";
+import useUsers from "@/hooks/use-users";
+import { cn } from "@/lib/utils";
 import { CompanyWithMembersWithUsers } from "@/types/db-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MemberRole } from "@prisma/client";
 import axios from "axios";
+import { Loader2 } from "lucide-react";
+import queryString from "query-string";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
@@ -75,11 +78,13 @@ export const CreateUserModal = () => {
     },
   });
 
+  const { mutate: mutateUsers } = useUsers();
+
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const url = qs.stringifyUrl({
+      const url = queryString.stringifyUrl({
         url: "/api/company/user",
         query: {
           companyId: params?.companyId,
@@ -94,6 +99,7 @@ export const CreateUserModal = () => {
 
       form.reset();
       router.refresh();
+      mutateUsers();
       onClose();
     } catch ({ response }: any) {
       const errorMessage = response?.data?.error;
@@ -187,9 +193,12 @@ export const CreateUserModal = () => {
                 )}
               />
             </div>
-            <DialogFooter className="bg-gray-100 px-6 py-4">
+            <DialogFooter className="bg-gray-100 flex justify-center items-center px-6 py-4">
               <Button variant="default" disabled={isLoading}>
-                Criar
+                <p className={cn(`block`, isLoading && "hidden")}>Criar</p>
+                {isLoading && (
+                  <Loader2 className="animate-spin text-zinc-500 ml-auto w-4 h-4" />
+                )}
               </Button>
             </DialogFooter>
           </form>

@@ -5,8 +5,8 @@ import React from "react";
 import { SidebarHeader } from "./sidebar-header";
 
 interface SidebarManagerProps {
-  companyId: string;
   children: React.ReactNode;
+  companyId: string;
 }
 
 const SidebarManager: React.FC<SidebarManagerProps> = async ({
@@ -41,11 +41,10 @@ const SidebarManager: React.FC<SidebarManagerProps> = async ({
   )?.role;
 
   return (
-    <div className="w-96 flex flex-row lg:w-96 ">
-      <div className="hidden md:border-l md:border-r md:flex flex-col w-full h-full ">
-        <SidebarHeader company={company} role={role} />
-        {children}
-      </div>
+    <div className="h-full flex border flex-col w-full">
+      <SidebarHeader company={company} role={role} />
+
+      <main className="h-full">{children}</main>
     </div>
   );
 };

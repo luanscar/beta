@@ -61,12 +61,17 @@ function NavLinks({ companyId }: NavLinksProps) {
             className={buttonVariants({
               variant: isActive ? "secondary" : "ghost",
               className: cn(
-                `hover:bg-gray-50 md:justify-start md:items-center md:flex md:w-32 shrink-0 md:gap-4`,
+                `hover:bg-gray-50 
+                md:justify-start 
+                md:items-center 
+                md:flex 
+                md:w-32
+                shrink-0 
+                md:gap-4`,
                 {
-                  "hidden md:items-center md:flex ": link.hideOnMobile,
+                  "hidden md:items-center md:flex": link.hideOnMobile,
                 }
               ),
-              size: "default",
             })}
           >
             <LinkIcon className="w-6 h-6 shrink-0" />

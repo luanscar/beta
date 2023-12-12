@@ -27,6 +27,7 @@ export async function POST(request: Request) {
     data: {
       email,
       name,
+      image: "https://avatar.iran.liara.run/public",
       userToken: uuidv4(),
       hashedPassword,
     },

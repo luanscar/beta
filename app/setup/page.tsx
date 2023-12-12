@@ -20,7 +20,6 @@ const SetupPage = async () => {
     },
   });
 
-  console.log(isCompanyMember);
   if (isCompanyMember) {
     return redirect(`/${isCompanyMember.id}/dashboard`);
   }
