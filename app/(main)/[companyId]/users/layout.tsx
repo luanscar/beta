@@ -1,5 +1,6 @@
 import SidebarManager from "@/components/sidebar/sidebar-manager";
 import { UserList } from "@/components/user/user-list";
+import { Users } from "@/components/user/users";
 import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
@@ -43,12 +44,13 @@ export default async function UsersLayout({
       <div className="h-full">
         <div className="hidden md:flex h-full w-96 z-20 flex-col fixed inset-y-0">
           <SidebarManager companyId={params.companyId}>
-            <UserList
+            <Users companyId={company.id} />
+            {/* <UserList
               apiUrl="/api/company/user"
               chatId={company.id}
               paramKey="companyId"
               paramValue={params.companyId}
-            />
+            /> */}
           </SidebarManager>
         </div>
         <main className="h-full md:pl-96">{children}</main>

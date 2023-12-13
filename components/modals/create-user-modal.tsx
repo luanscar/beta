@@ -40,6 +40,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { useCallback } from "react";
+import { useSWRConfig } from "swr";
 
 const formSchema = z.object({
   name: z
@@ -78,8 +80,8 @@ export const CreateUserModal = () => {
     },
   });
 
-  const { mutate: mutateUsers } = useUsers();
-
+  // const { refreshInterval, mutate, cache, ...restConfig } = useSWRConfig();
+  const { mutate } = useUsers();
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -99,7 +101,8 @@ export const CreateUserModal = () => {
 
       form.reset();
       router.refresh();
-      mutateUsers();
+      mutate(url);
+
       onClose();
     } catch ({ response }: any) {
       const errorMessage = response?.data?.error;

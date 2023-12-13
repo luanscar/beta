@@ -1,52 +1,88 @@
 import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
-import { MembersWithUsers } from "@/types/db-types";
-import { NextApiRequest, NextApiResponse } from "next";
+import { CompanyWithMembersWithUsers } from "@/types/db-types";
 import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 
+const USERS_BATCH = 10;
 
 export async function GET(req: NextRequest) {
   try {
-
     const loggedUser = await currentUser();
 
     if (!loggedUser) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-
     const { searchParams } = new URL(req.url);
 
+    const cursor = searchParams.get("cursor");
     const companyId = searchParams.get("companyId");
-
 
     if (!companyId) {
       return new NextResponse("Conversation ID missing", { status: 400 });
     }
 
+    let company: CompanyWithMembersWithUsers[] = [];
 
-      const membersWithUsers: MembersWithUsers = await db.member.findMany({
-      where: {
-        companyId,
-      },
-      include: {
-        user: true,
-      },
-      orderBy: {
-          createdAt: "desc"
-      }
-    })
+    if (cursor) {
+      company = await db.company.findMany({
+        where: {
+          id: companyId,
+        },
+        include: {
+          members: {
+            take: USERS_BATCH,
+            skip: 1,
+            cursor: {
+              id: cursor,
+            },
+            include: {
+              user: true,
+            },
+            orderBy: {
+              user: {
+                name: "asc",
+              },
+            },
+          },
+        },
+      });
+    } else {
+      company = await db.company.findMany({
+        where: {
+          id: companyId,
+        },
+        include: {
+          members: {
+            take: USERS_BATCH,
+            include: {
+              user: true,
+            },
+            orderBy: {
+              user: {
+                name: "asc",
+              },
+            },
+          },
+        },
+      });
+    }
+    let nextCursor = null;
 
-    return NextResponse.json(membersWithUsers);
-  
+    if (company[0].members.length === USERS_BATCH) {
+      nextCursor = company[0].members[USERS_BATCH - 1].id;
+    }
+
+    return NextResponse.json({
+      items: company,
+      nextCursor,
+    });
   } catch (error) {
     console.log("[USERS_GET]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
-
 }
-
 
 export async function POST(
   req: NextRequest,
