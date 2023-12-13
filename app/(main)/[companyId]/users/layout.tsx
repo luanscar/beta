@@ -1,5 +1,4 @@
 import SidebarManager from "@/components/sidebar/sidebar-manager";
-import { UserList } from "@/components/user/user-list";
 import { Users } from "@/components/user/users";
 import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
@@ -39,12 +38,22 @@ export default async function UsersLayout({
     return redirect("/");
   }
 
+  const role = company.members.find(
+    (member) => member.userId === user.id
+  )?.role;
+
   return (
     <>
       <div className="h-full">
         <div className="hidden md:flex h-full w-96 z-20 flex-col fixed inset-y-0">
           <SidebarManager companyId={params.companyId}>
-            <Users companyId={company.id} />
+            <Users
+              apiUrl="/api/company/user"
+              paramKey="companyId"
+              paramValue={company.id}
+              queryKey="ListUsers"
+              role={role}
+            />
             {/* <UserList
               apiUrl="/api/company/user"
               chatId={company.id}

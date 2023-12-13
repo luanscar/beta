@@ -1,52 +1,75 @@
 import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
 import { MembersWithUsers } from "@/types/db-types";
-import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 
+const USERS_BATCH = 10;
 
 export async function GET(req: NextRequest) {
   try {
-
     const loggedUser = await currentUser();
 
     if (!loggedUser) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-
-
     const { searchParams } = new URL(req.url);
 
-    const companyId = searchParams.get("companyId");
+    const cursor = searchParams.get("cursor");
 
+    const companyId = searchParams.get("companyId");
 
     if (!companyId) {
       return new NextResponse("Conversation ID missing", { status: 400 });
     }
 
+    let membersWithUsers: MembersWithUsers = [];
 
+    if (cursor) {
       const membersWithUsers: MembersWithUsers = await db.member.findMany({
-      where: {
-        companyId,
-      },
-      include: {
-        user: true,
-      },
-      orderBy: {
-          createdAt: "desc"
-      }
-    })
+        take: USERS_BATCH,
+        cursor: {
+          id: cursor,
+        },
+        where: {
+          companyId,
+        },
+        include: {
+          user: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+    } else {
+      const membersWithUsers: MembersWithUsers = await db.member.findMany({
+        take: USERS_BATCH,
+        where: {
+          companyId,
+        },
+        include: {
+          user: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+    }
+    let nextCursor = null;
 
-    return NextResponse.json(membersWithUsers);
-  
+    if (membersWithUsers.length === USERS_BATCH) {
+      nextCursor = membersWithUsers[USERS_BATCH - 1].id;
+    }
+
+    return NextResponse.json({
+      items: membersWithUsers,
+      nextCursor,
+    });
   } catch (error) {
     console.log("[USERS_GET]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
-
 }
-
 
 export async function POST(
   req: NextRequest,
@@ -58,6 +81,7 @@ export async function POST(
     const loggedUser = await currentUser();
     const { searchParams } = new URL(req.url);
 
+    const cursor = searchParams.get("cursor");
     const companyId = searchParams.get("companyId");
 
     if (!loggedUser) {

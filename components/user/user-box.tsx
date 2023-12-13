@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Avatar from "../avatar";
 
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import qs from "query-string";
 import { Button } from "../ui/button";
@@ -60,6 +61,15 @@ const UserBox: React.FC<UserBoxProps> = ({ data, role }) => {
       setLoadingId("");
     }
   };
+
+  const queryClient = useQueryClient();
+  const mutationDelete = useMutation({
+    mutationFn: onDelete,
+
+    onSuccess: () => {
+      queryClient.invalidateQueries(["ListUsers"]);
+    },
+  });
 
   return (
     <div
@@ -120,7 +130,7 @@ const UserBox: React.FC<UserBoxProps> = ({ data, role }) => {
 
               <div>
                 <Button
-                  onClick={() => onDelete(data.userId)}
+                  onClick={() => mutationDelete.mutate(data.userId)}
                   className={cn(
                     `
                     absolute 

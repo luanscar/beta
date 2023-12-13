@@ -22,11 +22,11 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { useModal } from "@/hooks/use-modal-store";
-import useUsers from "@/hooks/use-users";
 import { cn } from "@/lib/utils";
 import { CompanyWithMembersWithUsers } from "@/types/db-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MemberRole } from "@prisma/client";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import queryString from "query-string";
@@ -40,8 +40,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useCallback } from "react";
-import { useSWRConfig } from "swr";
 
 const formSchema = z.object({
   name: z
@@ -81,7 +79,7 @@ export const CreateUserModal = () => {
   });
 
   // const { refreshInterval, mutate, cache, ...restConfig } = useSWRConfig();
-  const { mutate } = useUsers();
+  // const { mutate } = useUsers();
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -100,8 +98,8 @@ export const CreateUserModal = () => {
       });
 
       form.reset();
-      router.refresh();
-      mutate(url);
+      // router.refresh();
+      // mutate(url);
 
       onClose();
     } catch ({ response }: any) {
@@ -109,6 +107,14 @@ export const CreateUserModal = () => {
       toast.error(errorMessage);
     }
   };
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: onSubmit,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["ListUsers"]);
+    },
+  });
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
@@ -119,7 +125,10 @@ export const CreateUserModal = () => {
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form
+            onSubmit={form.handleSubmit(mutation.mutate)}
+            className="space-y-8"
+          >
             <div className="space-y-8 px-6">
               <FormField
                 control={form.control}
