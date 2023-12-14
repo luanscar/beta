@@ -81,7 +81,7 @@ export const Users = ({
         ))} */}
 
       {hasNextPage ? (
-        <div className="flex justify-center mb-6">
+        <div className="flex justify-center mb-44">
           {isFetching ? (
             <Loader2 className="h-6 w-6 text-zinc-500 animate-spin my-4" />
           ) : (

@@ -17,8 +17,8 @@ if (process.env.NODE_ENV === "production") {
 
 const db = prisma
 
-import { faker } from '@faker-js/faker';
-import { MemberRole } from '@prisma/client';
+import { faker } from '@faker-js/faker'
+import { MemberRole } from '@prisma/client'
 
 async function main() {
   const alice = await db.user.create({
@@ -29,7 +29,7 @@ async function main() {
       image: faker.image.avatarGitHub(),
       members: {
         create: {
-          companyId: "d976e646-e6ef-465f-b8cf-35729119543d",
+          companyId: "ad6bdf33-da8e-4b0c-9d2c-ed6377ee4faf",
           role: MemberRole.GUEST
         }
       }
