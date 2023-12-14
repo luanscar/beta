@@ -38,6 +38,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import useMutate from "@/hooks/use-mutate";
 
 const formSchema = z.object({
   name: z
@@ -103,13 +105,22 @@ export const EditUserModal = () => {
       });
 
       form.reset();
-      router.refresh();
+      // router.refresh();
       onClose();
     } catch ({ response }: any) {
       const errorMessage = response?.data?.error;
       toast.error(errorMessage);
     }
   };
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: onSubmit,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["ListUsers"]);
+    },
+  });
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
@@ -120,7 +131,10 @@ export const EditUserModal = () => {
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form
+            onSubmit={form.handleSubmit(mutation.mutate)}
+            className="space-y-8"
+          >
             <div className="space-y-8 px-6">
               <FormField
                 control={form.control}

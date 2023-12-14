@@ -23,39 +23,56 @@ export async function GET(req: NextRequest) {
       return new NextResponse("Conversation ID missing", { status: 400 });
     }
 
-    let membersWithUsers: MembersWithUsers = [];
+    let membersWithUsers: MembersWithUsers[] = [];
+
 
     if (cursor) {
-      const membersWithUsers: MembersWithUsers = await db.member.findMany({
-        take: USERS_BATCH,
-        cursor: {
-          id: cursor,
-        },
-        where: {
-          companyId,
-        },
-        include: {
-          user: true,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
+       membersWithUsers = await db.member.findMany({
+         where: {
+           companyId,
+           NOT:{
+            userId: loggedUser.id
+           }
+          },
+          include: {
+            user: true,
+          },
+          take: USERS_BATCH,
+          skip: 1,
+          cursor: {
+              id: cursor
+             },
+          
+          orderBy: {
+            user: {
+              name: "asc"
+            }
+          },
+          
       });
     } else {
-      const membersWithUsers: MembersWithUsers = await db.member.findMany({
+       membersWithUsers = await db.member.findMany({
         take: USERS_BATCH,
         where: {
           companyId,
+          NOT:{
+            userId: loggedUser.id
+           }
         },
         include: {
           user: true,
         },
         orderBy: {
-          createdAt: "desc",
-        },
+            user: {
+              name: "asc"
+            }
+          },
       });
     }
     let nextCursor = null;
+
+    // console.log(membersWithUsers)
+
 
     if (membersWithUsers.length === USERS_BATCH) {
       nextCursor = membersWithUsers[USERS_BATCH - 1].id;

@@ -1,5 +1,6 @@
 import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
+import { faker } from "@faker-js/faker";
 import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 
@@ -33,7 +34,7 @@ export async function PATCH(
       data: {
         name,
         email,
-        image: "https://picsum.photos/200/300",
+        image: faker.image.avatarGitHub(),
         members: {
           update: {
             where: {

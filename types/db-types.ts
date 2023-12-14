@@ -6,7 +6,7 @@ export type CompanyWithMembersWithUsers = Company & {
 
 
 
-export type MembersWithUsers = (Member & { user: User })[]  | undefined | null
+export type MembersWithUsers = (Member & { user: User })
 
 
 // export type NextApiResponseServerIo = NextApiResponse & {

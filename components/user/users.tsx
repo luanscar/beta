@@ -1,9 +1,12 @@
 "use client";
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import { useInfiniteUser } from "@/hooks/use-infinite-user";
+import { MembersWithUsers } from "@/types/db-types";
 import { MemberRole } from "@prisma/client";
 import { Loader2 } from "lucide-react";
 import { ElementRef, Fragment, useRef } from "react";
+import { ScrollArea } from "../ui/scroll-area";
+import UserBox from "./user-box";
 
 interface UserProps {
   apiUrl: string;
@@ -57,41 +60,46 @@ export const Users = ({
     );
   }
 
-  console.log(JSON.stringify(data, null, 2));
   return (
-    <div>
-      <div>
-        <div
-          ref={chatRef}
-          className="flex-1 flex flex-col py-4 overflow-y-auto"
-        >
-          {!hasNextPage && <div className="flex-1" />}
+    <ScrollArea className="h-full flex flex-col py-4 overflow-y-auto">
+      <div ref={chatRef} className="f">
+        {!hasNextPage && <div className="flex-1" />}
 
-          {hasNextPage && (
-            <div className="flex justify-center">
-              {isFetching ? (
-                <Loader2 className="h-6 w-6 text-zinc-500 animate-spin my-4" />
-              ) : (
-                <button
-                  onClick={() => fetchNextPage()}
-                  className="text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 text-xs my-4 dark:hover:text-zinc-300 transition"
-                >
-                  Load previous messages
-                </button>
-              )}
-            </div>
-          )}
-          <div className="flex flex-col-reverse mt-auto">
-            {data?.pages?.map((group, i) => (
-              <Fragment key={i}>{JSON.stringify(group)}</Fragment>
-            ))}
-          </div>
-          <div ref={bottomRef} />
+        <div className="flex flex-col mt-auto">
+          {data?.pages?.map((group, i) => (
+            <Fragment key={i}>
+              {group.items.map((member: MembersWithUsers) => (
+                <UserBox data={member} key={member.id} role={role} />
+              ))}
+            </Fragment>
+          ))}
         </div>
-        {/* {users?.map((item) => (
+        <div ref={bottomRef} />
+      </div>
+      {/* {users?.map((item) => (
           <UserBox data={item} key={item.id} role={role} />
         ))} */}
-      </div>
-    </div>
+
+      {hasNextPage ? (
+        <div className="flex justify-center mb-6">
+          {isFetching ? (
+            <Loader2 className="h-6 w-6 text-zinc-500 animate-spin my-4" />
+          ) : (
+            <button
+              onClick={() => fetchNextPage()}
+              className="text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 text-xs my-4 dark:hover:text-zinc-300 transition"
+            >
+              Ver mais...
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="flex justify-center mb-4">
+          <p className="text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 text-xs my-4 dark:hover:text-zinc-300 transition">
+            Todos os usuários já foram carregados.
+          </p>
+        </div>
+      )}
+    </ScrollArea>
   );
 };

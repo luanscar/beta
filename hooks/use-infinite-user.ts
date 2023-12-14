@@ -41,7 +41,7 @@ export const useInfiniteUser = ({
   } = useInfiniteQuery({
     queryKey: [queryKey],
     queryFn: fetchUsers,
-    initialPageParam: 0,
+    initialPageParam: null,
     getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
   });
 

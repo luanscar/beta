@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
 import { MemberRole } from "@prisma/client";
+import { faker } from "@faker-js/faker";
 
 export async function POST(req: Request) {
   try {
@@ -18,7 +19,7 @@ export async function POST(req: Request) {
       data: {
         userId: user.id,
         name,
-        image: "https://avatar.iran.liara.run/public",
+        image: faker.image.avatarGitHub(),
         slug: slug,
         channels: {
           create: [

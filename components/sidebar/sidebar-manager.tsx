@@ -41,7 +41,7 @@ const SidebarManager: React.FC<SidebarManagerProps> = async ({
   )?.role;
 
   return (
-    <div className="h-full flex border flex-col w-full">
+    <div className="flex flex-col h-full text-primary w-full">
       <SidebarHeader company={company} role={role} />
 
       <main className="h-full">{children}</main>

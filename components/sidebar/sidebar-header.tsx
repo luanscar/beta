@@ -45,7 +45,7 @@ export const SidebarHeader = ({ company, role }: SidebarHeaderProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="focus:outline-none" asChild>
-        <button className="w-full text-md font-semibold px-3 flex items-center h-12  dark:border-neutral-800 border-b hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition">
+        <button className="w-full shrink-0 text-md font-semibold px-3 flex items-center h-12  dark:border-neutral-800 border-b hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition">
           {company.name}
           <ChevronDown className="h-5 w-5 ml-auto" />
         </button>
